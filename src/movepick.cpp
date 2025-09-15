@@ -172,4 +172,12 @@ i32 MovePicker::score_move(Move move) const {
     }
 }
 
+
+Move RandomMovePicker::next() {
+    if (m_moves.empty()) {
+        return Move::none();
+    }
+    return m_moves[Clockwork::Random::rand_64() % m_moves.size()];
+}
+
 }

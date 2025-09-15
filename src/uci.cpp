@@ -330,61 +330,88 @@ void UCIHandler::handle_genfens(std::istringstream& is) {
         }
     }
 
-    // Require book file
-    if (book == "None") {
-        std::cout << "Please specify a book file using 'book <filename>'." << std::endl;
-        return;
-    }
-
     // Set RNG state
     if (!seed_provided) {
         std::cout << "Seed not provided. Defaulting to 0." << std::endl;
     }
     Clockwork::Random::state = seed;
 
-    // Open the book file
-    std::ifstream file(book);
-    if (!file) {
-        std::cout << "Could not open file: " << book << std::endl;
-        return;
-    }
-
-    // Load all lines
     std::vector<std::string> lines;
     std::string              line;
-    while (std::getline(file, line)) {
-        if (!line.empty()) {
-            lines.push_back(line);
+    if (book != "None") {
+        std::cout << "Using book file: " << book << std::endl;
+
+        // Open the book file
+        std::ifstream file(book);
+        if (!file) {
+            std::cout << "Could not open file: " << book << std::endl;
+            return;
         }
-    }
 
-    // Safety checks
-    if (lines.empty()) {
-        std::cout << "Book file is empty." << std::endl;
-        return;
-    }
-
-    if (N > static_cast<int>(lines.size())) {
-        std::cout << "Requested " << N << " positions, but only " << lines.size() << " available."
-                  << std::endl;
-        return;
-    }
-
-    // Pick N unique random indices
-    std::unordered_set<size_t> selected_indices;
-    while (selected_indices.size() < static_cast<size_t>(N)) {
-        uint64_t rand_val = Clockwork::Random::rand_64();
-        selected_indices.insert(rand_val % lines.size());
-    }
-
-    // Output the selected FENs
-    for (size_t idx : selected_indices) {
-        auto pos = Position::parse(lines[idx]);
-        if (!pos) {
-            std::cout << "Invalid FEN in book: " << lines[idx] << std::endl;
-            exit(-1);
+        // Load all lines
+        while (std::getline(file, line)) {
+            if (!line.empty()) {
+                lines.push_back(line);
+            }
         }
-        std::cout << "info string genfens " << *pos << std::endl;
+
+        if (lines.empty()) {
+            std::cout << "Book file is empty." << std::endl;
+            return;
+        }
+        file.close();
+    } else {
+        // Add startpositions to lines
+        lines.push_back(startPosition);
+    }
+
+    // Line generation is as follows:
+    // 1) Pick a random line from the book (or startposition if no book)
+    // 2) Play random legal moves (see passing noisy or quiet moves)
+    // Launch a depth 12 verification search to make sure the position doesn't lose immediately
+    // 3) If the position is legal, print it
+    i32 generated = 0;
+
+    while (generated < N) {
+reset:
+        // Pick a random line from the book
+        const std::string& selected_line = lines[Clockwork::Random::rand_64() % lines.size()];
+
+        // Set up position
+        Position           pos = *Position::parse(selected_line);
+        Position::RepInfo& rep = *(new Position::RepInfo());
+        rep.reset();
+        rep.push(pos.get_hash_key(), false);
+
+        // Play until current move clock becomes 16
+        while (pos.get_ply() < 16) {
+            RandomMovePicker picker(pos);
+            Move             m = picker.next();
+            if (m == Move::none()) {
+                // No moves available, skip
+                goto reset;
+            }
+            pos = pos.move(m, pos.push_rep_info(rep));
+        }
+
+        // Mock search limits for datagen verification
+        Search::SearchSettings settings = {.soft_nodes = 32768, .hard_nodes = 1048576, .stm = pos.active_color()};
+
+        // Code taken straight from the bench function
+        searcher.wait();
+        RepetitionInfo dummy;
+        searcher.set_position(pos, dummy);
+        searcher.launch_search(settings);
+        searcher.wait();
+
+        // Somehow get the search score and check for abs(score) < 300
+        // ...
+
+        delete &rep;  // Clean up rep info
+
+        // If we reach here, the position is legal
+        std::cout << "info string genfens: " << pos << std::endl;
+        generated++;
     }
 }
 

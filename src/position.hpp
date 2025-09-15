@@ -226,6 +226,10 @@ public:
         return true;
     }
 
+    [[nodiscard]] u16 get_ply() const {
+        return m_ply;
+    }
+
     [[nodiscard]] bool is_insufficient_material() const {
         auto wpcnt = piece_count(Color::White);
         auto bpcnt = piece_count(Color::Black);
