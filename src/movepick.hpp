@@ -81,8 +81,8 @@ public:
     Move next();
 
 private:
-    MoveGen         m_movegen;
-    MoveList        m_noisy;
-    MoveList        m_quiet;
+    MoveGen  m_movegen;
+    MoveList m_noisy;
+    MoveList m_quiet;
 };
 }

@@ -175,7 +175,7 @@ i32 MovePicker::score_move(Move move) const {
 
 Move RandomMovePicker::next() {
     if (m_noisy.empty() && m_quiet.empty()) {
-        return Move::none(); // No moves available
+        return Move::none();  // No moves available
     }
     // Get a random index in the range [0, quiets.size() + noisies.size()) - 1]
     usize idx = Clockwork::Random::rand_64() % (m_noisy.size() + m_quiet.size());

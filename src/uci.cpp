@@ -2,13 +2,13 @@
 #include "bench.hpp"
 #include "evaluation.hpp"
 #include "move.hpp"
+#include "movepick.hpp"
 #include "perft.hpp"
 #include "position.hpp"
 #include "search.hpp"
 #include "tuned.hpp"
 #include "util/ios_fmt_guard.hpp"
 #include "util/parse.hpp"
-#include "movepick.hpp"
 #include "util/random.hpp"
 #include <algorithm>
 #include <fstream>
@@ -379,7 +379,7 @@ reset:
         const std::string& selected_line = lines[Clockwork::Random::rand_64() % lines.size()];
 
         // Set up position
-        Position           pos = *Position::parse(selected_line);
+        Position pos = *Position::parse(selected_line);
 
         // Play until current move clock becomes 16
         while (pos.get_ply() < 16) {
@@ -394,7 +394,7 @@ reset:
 
         // Mock search limits for datagen verification
         Search::SearchSettings settings = {
-          .stm = pos.active_color(), .hard_nodes = 1048576, .soft_nodes = 32768};
+          .stm = pos.active_color(), .hard_nodes = 1048576, .soft_nodes = 32768, .datagen = true};
 
         searcher.initialize(1);  // Initialize with 1 thread always for datagen
 
@@ -404,7 +404,7 @@ reset:
 
         searcher.set_position(pos, rep_info);
         searcher.launch_search(settings);
-        
+
         // Wait for the search to finish and get the score
         Value score = searcher.wait_for_score();
 

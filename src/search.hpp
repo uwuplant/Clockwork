@@ -26,6 +26,7 @@ struct SearchSettings {
     i64   move_time  = -1;
     u64   hard_nodes = 0;
     u64   soft_nodes = 0;
+    bool  datagen    = false;
 };
 
 // Forward declare for Searcher
@@ -108,13 +109,13 @@ public:
 
     Searcher();
     ~Searcher();
-    void set_position(const Position& root_position, const RepetitionInfo& repetition_info);
-    void launch_search(SearchSettings settings);
-    void stop_searching();
-    void wait();
+    void  set_position(const Position& root_position, const RepetitionInfo& repetition_info);
+    void  launch_search(SearchSettings settings);
+    void  stop_searching();
+    void  wait();
     Value wait_for_score();
-    void initialize(int thread_count);
-    void exit();
+    void  initialize(int thread_count);
+    void  exit();
 
     u64  node_count();
     void reset();
@@ -173,6 +174,7 @@ private:
     ThreadData               m_td;
     std::atomic<bool>        m_stopped;
     std::atomic<bool>        m_exiting;
+    bool                     m_datagen = false;
     std::array<u64, 64 * 64> m_node_counts;
     Depth                    m_seldepth;
 

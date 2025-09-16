@@ -212,10 +212,14 @@ void Worker::start_searching() {
                                                                 : std::numeric_limits<u64>::max(),
           .depth_limit     = m_searcher.settings.depth > 0 ? m_searcher.settings.depth : MAX_PLY};
 
+        m_datagen = m_searcher.settings.datagen;
+
         Move best_move = iterative_deepening<true>(root_position);
 
         // Print (and make sure to flush) the best move
-        std::cout << "bestmove " << best_move << std::endl;
+        if (!m_datagen) {
+            std::cout << "bestmove " << best_move << std::endl;
+        }
 
         m_searcher.stop_searching();
     } else {
@@ -339,14 +343,14 @@ Move Worker::iterative_deepening(const Position& root_position) {
             break;
         }
 
-        if (IS_MAIN) {
+        if (IS_MAIN && !m_datagen) {
             print_info_line();
         }
     }
 
     // Print last info line
     // This ensures we output our last value of search_nodes before termination, allowing for accurate search reproduction.
-    if (IS_MAIN) {
+    if (IS_MAIN && !m_datagen) {
         print_info_line();
     }
 
