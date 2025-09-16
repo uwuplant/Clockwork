@@ -134,10 +134,15 @@ int main(int argc, char* argv[]) {
         std::cout << "inline const PScore QUEEN_MAT  = " << QUEEN_MAT << ";" << std::endl;
         std::cout << std::endl;
 
-        std::cout << "inline const PScore KNIGHT_MAT_SCALE = " << KNIGHT_MAT_SCALE << ";" << std::endl;
-        std::cout << "inline const PScore BISHOP_MAT_SCALE = " << BISHOP_MAT_SCALE << ";" << std::endl;
-        std::cout << "inline const PScore ROOK_MAT_SCALE   = " << ROOK_MAT_SCALE << ";" << std::endl;
-        std::cout << "inline const PScore QUEEN_MAT_SCALE  = " << QUEEN_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const Score KNIGHT_MAT_SCALE = " << KNIGHT_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const Score BISHOP_MAT_SCALE = " << BISHOP_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const Score ROOK_MAT_SCALE   = " << ROOK_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const Score QUEEN_MAT_SCALE  = " << QUEEN_MAT_SCALE << ";" << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "inline const Score MAT_SCALE_BASE  = " << MAT_SCALE_BASE << ";" << std::endl;
+        std::cout << "inline const Score MAT_SCALE_DIV  = " << MAT_SCALE_DIV << ";" << std::endl;
+        std::cout << std::endl;
 
         std::cout << "inline const PScore TEMPO_VAL  = " << TEMPO_VAL << ";" << std::endl;
         std::cout << std::endl;

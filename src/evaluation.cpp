@@ -130,7 +130,7 @@ Score evaluate_white_pov(const Position& pos, const PsqtState& psqt_state) {
             + pos.piece_count(PieceType::Rook) * ROOK_MAT_SCALE
             + pos.piece_count(PieceType::Queen) * QUEEN_MAT_SCALE;
 
-    return eval->phase<24>(phase) * (25500 + mat / 2) / 32768;
+    return eval->phase<24>(phase) * (MAT_SCALE_BASE + mat) / MAT_SCALE_DIV;
 };
 
 Score evaluate_stm_pov(const Position& pos, const PsqtState& psqt_state) {
