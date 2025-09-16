@@ -86,12 +86,8 @@ Value Searcher::wait_for_score() {
     if (m_workers.empty() || m_workers[0]->thread_type() != ThreadType::MAIN) {
         throw std::logic_error("wait_for_score can only be called from the main thread");
     }
-    // If there is no search in progress, return a score of 0.
-    if (m_workers[0]->search_nodes() == 0) {
-        return 0;
-    }
-    // Otherwise, wait for the search to finish.
-    wait();
+    // Protect the read of root_score with a unique_lock.
+    std::unique_lock lock_guard{mutex};
     // Return the final score from the main thread's search.
     return m_workers[0]->get_thread_data().root_score;
 }
