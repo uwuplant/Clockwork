@@ -129,7 +129,7 @@ Score evaluate_white_pov(const Position& pos, const PsqtState& psqt_state) {
             + pos.piece_count(PieceType::Bishop) * BISHOP_MAT_SCALE
             + pos.piece_count(PieceType::Rook) * ROOK_MAT_SCALE
             + pos.piece_count(PieceType::Queen) * QUEEN_MAT_SCALE;
-    // std::cout << mat << std::endl;
+
     return eval->phase<24>(phase) * (25500 + mat / 2) / 32768;
 };
 
