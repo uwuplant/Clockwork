@@ -414,7 +414,7 @@ reset:
         }
 
         // If we reach here, the position is legal
-        std::cout << "info string genfens: " << pos << std::endl;
+        std::cout << "info string genfens " << pos << std::endl;
         generated++;
     }
 }
