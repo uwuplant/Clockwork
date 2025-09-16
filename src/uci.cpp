@@ -8,6 +8,7 @@
 #include "tuned.hpp"
 #include "util/ios_fmt_guard.hpp"
 #include "util/parse.hpp"
+#include "movepick.hpp"
 #include "util/random.hpp"
 #include <algorithm>
 #include <fstream>
@@ -362,7 +363,7 @@ void UCIHandler::handle_genfens(std::istringstream& is) {
         file.close();
     } else {
         // Add startpositions to lines
-        lines.push_back(startPosition);
+        lines.push_back("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
     // Line generation is as follows:
@@ -379,9 +380,6 @@ reset:
 
         // Set up position
         Position           pos = *Position::parse(selected_line);
-        Position::RepInfo& rep = *(new Position::RepInfo());
-        rep.reset();
-        rep.push(pos.get_hash_key(), false);
 
         // Play until current move clock becomes 16
         while (pos.get_ply() < 16) {
@@ -391,23 +389,29 @@ reset:
                 // No moves available, skip
                 goto reset;
             }
-            pos = pos.move(m, pos.push_rep_info(rep));
+            pos = pos.move(m);
         }
 
         // Mock search limits for datagen verification
-        Search::SearchSettings settings = {.soft_nodes = 32768, .hard_nodes = 1048576, .stm = pos.active_color()};
+        Search::SearchSettings settings = {
+          .stm = pos.active_color(), .hard_nodes = 1048576, .soft_nodes = 32768};
 
-        // Code taken straight from the bench function
-        searcher.wait();
-        RepetitionInfo dummy;
-        searcher.set_position(pos, dummy);
+        searcher.initialize(1);  // Initialize with 1 thread always for datagen
+
+        RepetitionInfo rep_info;
+        rep_info.reset();
+        rep_info.push(pos.get_hash_key(), false);
+
+        searcher.set_position(pos, rep_info);
         searcher.launch_search(settings);
-        searcher.wait();
+        
+        // Wait for the search to finish and get the score
+        Value score = searcher.wait_for_score();
 
-        // Somehow get the search score and check for abs(score) < 300
-        // ...
-
-        delete &rep;  // Clean up rep info
+        if (score < -VALUE_WIN || score > VALUE_WIN) {
+            // Position is mate or losing, skip
+            goto reset;
+        }
 
         // If we reach here, the position is legal
         std::cout << "info string genfens: " << pos << std::endl;

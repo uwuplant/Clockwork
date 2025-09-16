@@ -74,7 +74,6 @@ private:
 class RandomMovePicker {
 public:
     explicit RandomMovePicker(const Position& pos) :
-        m_pos(pos),
         m_movegen(pos) {
         m_movegen.generate_moves(m_noisy, m_quiet);
     };
@@ -82,7 +81,6 @@ public:
     Move next();
 
 private:
-    const Position& m_pos;
     MoveGen         m_movegen;
     MoveList        m_noisy;
     MoveList        m_quiet;

@@ -81,7 +81,22 @@ void Searcher::wait() {
     std::unique_lock lock_guard{mutex};
 }
 
-void Searcher::initialize(size_t thread_count) {
+Value Searcher::wait_for_score() {
+    // Make sure this is being used on only the main thread.
+    if (m_workers.empty() || m_workers[0]->thread_type() != ThreadType::MAIN) {
+        throw std::logic_error("wait_for_score can only be called from the main thread");
+    }
+    // If there is no search in progress, return a score of 0.
+    if (m_workers[0]->search_nodes() == 0) {
+        return 0;
+    }
+    // Otherwise, wait for the search to finish.
+    wait();
+    // Return the final score from the main thread's search.
+    return m_workers[0]->get_thread_data().root_score;
+}
+
+void Searcher::initialize(int thread_count) {
     if (m_workers.size() == thread_count) {
         return;
     }
@@ -286,6 +301,9 @@ Move Worker::iterative_deepening(const Position& root_position) {
         last_pv           = ss[SS_PADDING].pv;
         last_best_move    = last_pv.first_move();
         base_search_score = search_depth == 1 ? score : base_search_score;
+
+        // Store root score in thread data for retrieval by wait_for_score
+        m_td.root_score = score;
 
         // Check depth limit
         if (IS_MAIN && search_depth >= m_search_limits.depth_limit) {

@@ -1,7 +1,7 @@
 #include "movepick.hpp"
-#include "immintrin.h"
 #include "see.hpp"
 #include "tuned.hpp"
+#include "util/random.hpp"
 #include <emmintrin.h>
 #include <immintrin.h>
 
@@ -174,10 +174,16 @@ i32 MovePicker::score_move(Move move) const {
 
 
 Move RandomMovePicker::next() {
-    if (m_moves.empty()) {
-        return Move::none();
+    if (m_noisy.empty() && m_quiet.empty()) {
+        return Move::none(); // No moves available
     }
-    return m_moves[Clockwork::Random::rand_64() % m_moves.size()];
+    // Get a random index in the range [0, quiets.size() + noisies.size()) - 1]
+    usize idx = Clockwork::Random::rand_64() % (m_noisy.size() + m_quiet.size());
+    if (idx < m_noisy.size()) {
+        return m_noisy[idx];
+    } else {
+        return m_quiet[idx - m_noisy.size()];
+    }
 }
 
 }
