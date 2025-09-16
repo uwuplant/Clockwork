@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     std::vector<f64>      results;
 
     // List of files to load
-    std::vector<std::string> fenFiles = {"data/v2.1_filtered/filtered_data.txt"};
+    std::vector<std::string> fenFiles = {"data/filtered_data.txt"};
 
     for (const auto& filename : fenFiles) {
         std::ifstream fenFile(filename);
@@ -132,6 +132,13 @@ int main(int argc, char* argv[]) {
         std::cout << "inline const PScore BISHOP_MAT = " << BISHOP_MAT << ";" << std::endl;
         std::cout << "inline const PScore ROOK_MAT   = " << ROOK_MAT << ";" << std::endl;
         std::cout << "inline const PScore QUEEN_MAT  = " << QUEEN_MAT << ";" << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "inline const PScore KNIGHT_MAT_SCALE = " << KNIGHT_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const PScore BISHOP_MAT_SCALE = " << BISHOP_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const PScore ROOK_MAT_SCALE   = " << ROOK_MAT_SCALE << ";" << std::endl;
+        std::cout << "inline const PScore QUEEN_MAT_SCALE  = " << QUEEN_MAT_SCALE << ";" << std::endl;
+
         std::cout << "inline const PScore TEMPO_VAL  = " << TEMPO_VAL << ";" << std::endl;
         std::cout << std::endl;
 

@@ -125,16 +125,12 @@ Score evaluate_white_pov(const Position& pos, const PsqtState& psqt_state) {
           - evaluate_potential_checkers<Color::Black>(pos);
     eval += (us == Color::White) ? TEMPO_VAL : -TEMPO_VAL;
  
-    i32 mat = pos.piece_count(Color::White, PieceType::Knight) * KNIGHT_MAT.mg()
-            + pos.piece_count(Color::Black, PieceType::Knight) * KNIGHT_MAT.mg()
-            + pos.piece_count(Color::White, PieceType::Bishop) * BISHOP_MAT.mg()
-            + pos.piece_count(Color::Black, PieceType::Bishop) * BISHOP_MAT.mg()
-            + pos.piece_count(Color::White, PieceType::Rook) * ROOK_MAT.mg()
-            + pos.piece_count(Color::Black, PieceType::Rook) * ROOK_MAT.mg()
-            + pos.piece_count(Color::White, PieceType::Queen) * QUEEN_MAT.mg()
-            + pos.piece_count(Color::Black, PieceType::Queen) * QUEEN_MAT.mg();
-    
-    return eval->phase<24>(phase) * (25500 + (mat / 2)) / 32768;
+    Score mat = pos.piece_count(PieceType::Knight) * KNIGHT_MAT_SCALE
+            + pos.piece_count(PieceType::Bishop) * BISHOP_MAT_SCALE
+            + pos.piece_count(PieceType::Rook) * ROOK_MAT_SCALE
+            + pos.piece_count(PieceType::Queen) * QUEEN_MAT_SCALE;
+    // std::cout << mat << std::endl;
+    return eval->phase<24>(phase) * (25500 + mat / 2) / 32768;
 };
 
 Score evaluate_stm_pov(const Position& pos, const PsqtState& psqt_state) {

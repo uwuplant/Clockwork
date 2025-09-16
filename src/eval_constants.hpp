@@ -10,6 +10,12 @@ inline const PScore KNIGHT_MAT = S(839, 1004);
 inline const PScore BISHOP_MAT = S(869, 1103);
 inline const PScore ROOK_MAT   = S(1272, 1804);
 inline const PScore QUEEN_MAT  = S(2773, 3287);
+
+inline const Score KNIGHT_MAT_SCALE = V(300);
+inline const Score BISHOP_MAT_SCALE = V(330);
+inline const Score ROOK_MAT_SCALE   = V(500);
+inline const Score QUEEN_MAT_SCALE  = V(900);
+
 inline const PScore TEMPO_VAL  = S(29, 15);
 
 inline const PScore BISHOP_PAIR_VAL  = S(59, 204);

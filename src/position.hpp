@@ -166,6 +166,10 @@ public:
         return piece_list(color).mask_eq<ptypes...>().popcount();
     }
 
+    [[nodiscard]] i32 piece_count(PieceType ptype) const {
+        return (piece_list(Color::White).mask_eq(ptype) | piece_list(Color::Black).mask_eq(ptype)).popcount();
+    }
+
     [[nodiscard]] PieceMask get_piece_mask(Color color) const {
         return piece_list(color).mask_valid();
     }
