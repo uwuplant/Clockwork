@@ -114,6 +114,14 @@ inline const std::array<PParam, 64> KING_PSQT = {
     S(81, -118),    S(116, -46),    S(-1, 24),      S(-117, 85),    S(0, 0),        S(0, 0),        S(0, 0),        S(0, 0),        //
     S(-30, -181),   S(74, -139),    S(-58, -96),    S(-26, -125),   S(0, 0),        S(0, 0),        S(0, 0),        S(0, 0),        //
 };
+
+inline const Score KNIGHT_MAT_SCALE = CV(50);
+inline const Score BISHOP_MAT_SCALE = CV(55);
+inline const Score ROOK_MAT_SCALE   = CV(100);
+inline const Score QUEEN_MAT_SCALE  = CV(180);
+
+inline const Score MAT_SCALE_BASE  = CV(2237);
+inline const Score MAT_SCALE_DIV  = CV(3485);
 // clang-format on
 
 }

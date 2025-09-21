@@ -161,6 +161,10 @@ public:
         return piece_list(color).mask_eq(ptype).popcount();
     }
 
+    [[nodiscard]] usize piece_count(PieceType ptype) const {
+        return piece_count(Color::White, ptype) + piece_count(Color::Black, ptype);
+    }
+
     template<PieceType... ptypes>
     [[nodiscard]] usize piece_count(Color color) const {
         return piece_list(color).mask_eq<ptypes...>().popcount();

@@ -109,15 +109,20 @@ using PParam = PScore;
 #else
 
 using Score  = Autograd::ValuePtr;
+using SParam = Autograd::ValuePlaceholder;
 using PScore = Autograd::PairPtr;
 using PParam = Autograd::PairPlaceholder;
 
 #endif
 
 #ifdef EVAL_TUNING
+    #define V(a) Autograd::Value::create_tunable((a))
+    #define CV(a) Autograd::Value::create((a))
     #define S(a, b) Autograd::PairPlaceholder::create_tunable((a), (b))  // Defines a tunable pscore
     #define CS(a, b) Autograd::PairPlaceholder::create((a), (b))
 #else
+    #define V(a) Score(a)
+    #define CV(a) V(a)
     #define S(a, b) PScore((a), (b))  // Defines a constant pscore when not tuning
     #define CS(a, b) S((a), (b))
 #endif

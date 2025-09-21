@@ -151,7 +151,13 @@ Score evaluate_white_pov(const Position& pos, const PsqtState& psqt_state) {
     eval += evaluate_potential_checkers<Color::White>(pos)
           - evaluate_potential_checkers<Color::Black>(pos);
     eval += (us == Color::White) ? TEMPO_VAL : -TEMPO_VAL;
-    return eval->phase<24>(static_cast<i32>(phase));
+
+    Score mat = pos.piece_count(PieceType::Knight) * KNIGHT_MAT_SCALE
+            + pos.piece_count(PieceType::Bishop) * BISHOP_MAT_SCALE
+            + pos.piece_count(PieceType::Rook) * ROOK_MAT_SCALE
+            + pos.piece_count(PieceType::Queen) * QUEEN_MAT_SCALE;
+
+    return eval->phase<24>(static_cast<i32>(phase)) * (MAT_SCALE_BASE + mat) / MAT_SCALE_DIV;;
 };
 
 Score evaluate_stm_pov(const Position& pos, const PsqtState& psqt_state) {
