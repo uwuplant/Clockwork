@@ -394,7 +394,7 @@ reset:
 
         // Mock search limits for datagen verification
         Search::SearchSettings settings = {
-          .stm = pos.active_color(), .hard_nodes = 1048576, .soft_nodes = 32768, .datagen = true};
+          .stm = pos.active_color(), .hard_nodes = 1048576, .soft_nodes = 65536, .datagen = true};
 
         searcher.initialize(1);  // Initialize with 1 thread always for datagen
 
@@ -408,7 +408,7 @@ reset:
         // Wait for the search to finish and get the score
         Value score = searcher.wait_for_score();
 
-        if (score < -VALUE_WIN || score > VALUE_WIN) {
+        if (std::abs(score) > 450) {
             // Position is mate or losing, skip
             goto reset;
         }
