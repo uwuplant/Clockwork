@@ -754,7 +754,10 @@ Value Worker::quiesce(const Position& pos, Stack* ss, Value alpha, Value beta, i
 
 Value Worker::evaluate(const Position& pos) {
 #ifndef EVAL_TUNING
-    return static_cast<Value>(Clockwork::evaluate_stm_pov(pos, m_td.psqt_states.back()));
+    return static_cast<Value>(
+        Clockwork::evaluate_stm_pov(pos, m_td.psqt_states.back())
+      * (120 - pos.get_50mr_counter()) / 120
+    );
 #else
     return -VALUE_INF;  // Not implemented in tune mode
 #endif
