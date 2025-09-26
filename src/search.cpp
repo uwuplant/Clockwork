@@ -505,7 +505,7 @@ Value Worker::search(
 
             reduction += alpha_raises * 512;
 
-            reduction += (512 * !improving);
+            reduction -= (1024 * improving);
 
             if (cutnode) {
                 reduction += 1024;
