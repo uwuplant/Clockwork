@@ -495,8 +495,9 @@ Value Worker::search(
         Depth new_depth = depth - 1 + pos_after.is_in_check();
         Value value;
         if (depth >= 3 && moves_played >= 2 + 2 * PV_NODE) {
-            i32 reduction = static_cast<i32>(
-              std::round(1024 * (0.77 + std::log(depth) * std::log(moves_played) / 2.36)));
+            i32 reduction = static_cast<i32>(quiet ?
+              std::round(1024 * (0.9 + std::log(depth) * std::log(moves_played) / 2.2)) :
+              std::round(1024 * (0.4 + std::log(depth) * std::log(moves_played) / 2.5)));
             reduction -= 1024 * PV_NODE;
 
             reduction += alpha_raises * 512;
