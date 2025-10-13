@@ -381,8 +381,9 @@ reset:
         // Set up position
         Position pos = *Position::parse(selected_line);
 
-        // Play until current move clock becomes 16
-        while (pos.get_ply() < 16) {
+        int moves = 0;
+        // Make 4 random moves out of book
+        while (moves < 4) {
             RandomMovePicker picker(pos);
             Move             m = picker.next();
             if (m == Move::none()) {
@@ -390,6 +391,7 @@ reset:
                 goto reset;
             }
             pos = pos.move(m);
+            moves++;
         }
 
         // Mock search limits for datagen verification
